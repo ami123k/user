@@ -20,6 +20,26 @@ public class entreprise {
     private String type;
     @Column(name = "name_entreprise")
     private String name_entreprise;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "logo")
+    private String logo;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -85,12 +105,14 @@ public class entreprise {
     public entreprise() {
     }
 
-    public entreprise(String patente,String name,  String type, String name_entreprise, categorie categories) {
+    public entreprise(String patente,String name,  String type, String name_entreprise, categorie categories,String description , String logo) {
         this.patente = patente;
         this.type = type;
         this.name_entreprise = name_entreprise;
         this.categories = categories;
         this.name = name;
+        this.description=description;
+        this.logo=logo;
     }
 
     public String getType() {
@@ -111,12 +133,6 @@ public class entreprise {
         this.name_entreprise = name_entreprise;
     }
 
-    public entreprise(String patente, String type, String name_entreprise, categorie categories, List<User> listeUser, String name) {
-        this.patente = patente;
-        this.type = type;
-        this.name_entreprise = name_entreprise;
-        this.categories = categories;
-        this.listeUser = listeUser;
-        this.name = name;
-    }
+
+
 }

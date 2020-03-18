@@ -22,7 +22,7 @@ public class UserApplication implements CommandLineRunner {
     @Resource
     StorageService storageService;
     public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
+        SpringApplication.run(UserApplication.class,args);
 
     }
     @Override

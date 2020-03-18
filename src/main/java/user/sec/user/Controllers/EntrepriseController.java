@@ -144,15 +144,18 @@ public class EntrepriseController {
     List<String> files = new ArrayList<String>();
 
     @PostMapping("/post")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file , String name_entreprise , categorie categorie ) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file ,@RequestParam("logo") MultipartFile logo , String name_entreprise ,String descprition, categorie categorie ) {
         String message = "";
         try {
 
             storageService.store(file);
+            storageService.store(logo);
             files.add(file.getOriginalFilename());
-
+            files.add(logo.getOriginalFilename());
             message = "You successfully uploaded " + file.getOriginalFilename() + "!";
-            entreprise e = new entreprise(file.getName(),file.getContentType(),file.getOriginalFilename(),name_entreprise,categorie);
+
+
+            entreprise e = new entreprise(file.getName(),file.getContentType(),file.getOriginalFilename(),name_entreprise,categorie,descprition,logo.getOriginalFilename());
             offreRepositiory.save(e);
             return ResponseEntity.status(HttpStatus.OK).body(message);
         } catch (Exception e) {
