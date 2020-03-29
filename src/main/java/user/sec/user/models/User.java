@@ -33,6 +33,7 @@ private String password;
 private String passwordConfirm;
 
 
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name ="id_entreprise")
@@ -114,8 +115,34 @@ private String passwordConfirm;
         return role;
     }
 
+    public entreprise getEntrepriseuser() {
+        return entrepriseuser;
+    }
+
+    public void setEntrepriseuser(entreprise entrepriseuser) {
+        this.entrepriseuser = entrepriseuser;
+    }
+
     public void setRoles(Set<Role> roles) {
         this.role = roles;
+    }
+
+    private boolean valider;
+
+    public Set<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<Role> role) {
+        this.role = role;
+    }
+
+    public boolean isValider() {
+        return valider;
+    }
+
+    public void setValider(boolean valider) {
+        this.valider = valider;
     }
 }
 

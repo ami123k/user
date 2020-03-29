@@ -6,18 +6,25 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
+import org.springframework.integration.sftp.session.SftpSession;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import user.sec.user.models.categorie;
 import user.sec.user.models.*;
-import user.sec.user.repository.OffreRepositiory;
-import user.sec.user.repository.PropositionRepository;
+import user.sec.user.repository.*;
+import user.sec.user.sftp.UpAndDownload;
 import user.sec.user.storage.StorageService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -25,12 +32,19 @@ import java.util.stream.Collectors;
 public class PropositionController {
     @Autowired
     private PropositionRepository propositionRepositiory ;
-@Autowired
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
 private offreController offreController;
 @Autowired
 private UserController userController;
-
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    EntrepriseController entrepriseController;
     /* ////////////////////////////afficher////////////////////// */
+    @Autowired
+    private EntrepriseRepository entrepriseRepository ;
 
     @GetMapping(value = "/listproposition" )
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
@@ -117,6 +131,98 @@ private UserController userController;
 
     }
 
+    @GetMapping(value = "/listentreprisebypropo/{id_proposition}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<String> findusersfromproposition( @PathVariable(value = "id_proposition") Long id){
+        return  propositionRepositiory.findusersfromproposition(id);
 
+    }
+    @GetMapping(value = "/finduserfromproposition/{id_proposition}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<proposition> finduserfromproposition( @PathVariable(value = "id_proposition") Long id){
+        return  propositionRepositiory.finduserfromproposition(id);
+
+    }
+    @GetMapping(value = "/findpropositionByid/{proposition_id}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public proposition findpropositionByid( @PathVariable(value = "proposition_id") Long id){
+        return  propositionRepositiory.findpropositionByid(id);
+
+    }
+
+    @GetMapping(value = "/nameentreprisebypropo/{id_proposition}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<String> nameentreprisebypropo( @PathVariable(value = "id_proposition") Long id){
+        return  propositionRepositiory.nameentreprisebypropo(id);
+
+    }
+
+    @GetMapping(value = "/maxid" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public Long maxid(){
+        return  propositionRepositiory.maxidentreprise();
+
+    }
+    Set<Role> roles = new HashSet<>();
+    /* ////////////////////////////update////////////////////// */
+    @RequestMapping(value = "/Updateuser/{id}", method = RequestMethod.PUT)
+    public User Updateuser(@PathVariable(name = "id") Long id , @RequestBody User p) {
+        Role userRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
+        p.setId(id);
+        User user = userController.user(id);
+        p.setEmail(user.getEmail());
+        p.setPassword(user.getPassword());
+        p.setUsername(user.getUsername());
+        p.setValider(true);
+        p.setEntrepriseuser(entrepriseRepository.findById(maxid()).get());
+        p.setRoles(roles);
+        return userRepository.save(p);
+
+    }
+    @RequestMapping(value = "/Updateadmin/{id}", method = RequestMethod.PUT)
+    public User valider(@PathVariable(name = "id") Long id , @RequestBody User p) {
+        Role userRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
+        p.setValider(true);
+        p.setId(id);
+        User user = userController.user(id);
+        p.setEmail(user.getEmail());
+        p.setPassword(user.getPassword());
+        p.setUsername(user.getUsername());
+        p.setRoles(roles);
+        return userRepository.save(p);
+
+    }
+
+    @RequestMapping(value = "/Updateproposition/{id}", method = RequestMethod.PUT)
+    public proposition validerpropostion(@PathVariable(name = "id") Long id , @RequestBody proposition p) {
+        p.setId_proposition(id);
+        proposition propo = propositionRepositiory.findById(id).get();
+        p.setDescription(propo.getDescription());
+        p.setName(propo.getName());
+        p.setPropositionscanner(propo.getPropositionscanner());
+        p.setType(propo.getType());
+        p.setUser(propo.getUser());
+        p.setOffre(propo.getOffre());
+        p.setValidation(false);
+        return propositionRepositiory.save(p);
+
+    }
+
+    @GetMapping(value = "/listpropbyoffconfirm/{user_id}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<proposition> findBypropoconfirm( @PathVariable(value = "user_id") Long user_id){
+        return  propositionRepositiory.findBypropoconfirm(user_id,false);
+
+    }
+    @GetMapping(value = "/findpropouserbyoffre/{user_id}/{offre_id}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<proposition> findpropouserbyoffre( @PathVariable(value = "user_id") Long user_id ,@PathVariable(value = "offre_id") Long offre_id){
+        return  propositionRepositiory.findpropouserbyoffre(user_id,offre_id);
+
+    }
 
 }

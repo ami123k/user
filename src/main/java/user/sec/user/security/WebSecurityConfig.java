@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("*").permitAll()
                .antMatchers("/files/*").permitAll()
+                .antMatchers("192.168.1.8/*").permitAll()
                 .antMatchers("/filespropo").permitAll()
                 .anyRequest().authenticated();
 

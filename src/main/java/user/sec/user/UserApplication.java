@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import user.sec.user.repository.OffreRepositiory;
+import user.sec.user.sftp.UpAndDownload;
 import user.sec.user.storage.StorageService;
 import user.sec.user.models.*;
 
@@ -28,7 +29,7 @@ public class UserApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         restConfiguration.exposeIdsFor(offre.class);
-       // storageService.deleteAll();
+      // storageService.deleteAll();
         //storageService.init();
         //  produitRepository.save(new produit(1,"ordinateur",670.0,3));
         //produitRepository.save(new produit(2,"ordinateur",670.0,3));

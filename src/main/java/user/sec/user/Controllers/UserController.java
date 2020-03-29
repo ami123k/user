@@ -2,12 +2,14 @@ package user.sec.user.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import user.sec.user.models.User;
-import user.sec.user.models.offre;
+import user.sec.user.models.*;
 import user.sec.user.repository.RoleRepository;
 import user.sec.user.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -29,6 +31,20 @@ public class UserController {
     public User user(@PathVariable(name = "id") Long id ) {
         return userRepository.findById(id).get();
     }
+
+    @DeleteMapping(value = "/deleteuser/{id}" )
+    public void Delete(@PathVariable(name = "id") Long id ) {
+        userRepository.deleteById(id);
+
+    }
+    Set<Role> roles = new HashSet<>();
+
+    @GetMapping(value = "/userbyrole" )
+    public List<User> usersListbyrole(){
+        return  userRepository.findByRole(false);
+
+    }
+
 
 
 }
