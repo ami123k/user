@@ -49,4 +49,9 @@ public interface PropositionRepository extends JpaRepository<proposition, Long> 
 
  @Query("SELECT e from proposition e where e.user.id =:id AND e.offre.id_offre =:id_offre")
  List<proposition> findpropouserbyoffre(@Param("id") Long id,@Param("id_offre") Long id_offre);
+
+ @Query("SELECT COUNT (u) FROM proposition u ")
+ public int countproposition();
+ @Query("SELECT COUNT (u) FROM proposition u where u.validation = ?1")
+ public int countpropositionvalide(boolean valid);
 }

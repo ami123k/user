@@ -47,6 +47,13 @@ public class EntrepriseController {
         return  offreRepositiory.findAll();
 
     }
+    @GetMapping(value = "/countentreprise" )
+    public int countentreprise(){
+        return  offreRepositiory.countentreprise();
+
+    }
+
+
     /* ////////////////////////////find////////////////////// */
     @GetMapping(value = "/listentreprise/{id}" )
     public entreprise entreprise

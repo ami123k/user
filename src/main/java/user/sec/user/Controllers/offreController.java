@@ -30,6 +30,11 @@ public class offreController {
         return  offreRepositiory.findoffresBycat(categorie);
 
     }
+    @GetMapping(value = "/countoffre" )
+    public int countoffre(){
+        return  offreRepositiory.countoffre();
+
+    }
 
     /* ////////////////////////////find////////////////////// */
     @GetMapping(value = "/offre/{id}" )

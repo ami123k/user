@@ -15,5 +15,8 @@ public interface EntrepriseRepository extends JpaRepository<entreprise, Long> {
     @Query("SELECT u FROM entreprise u where u.categories = ?1")
     public List<entreprise> finentrepriseBycat(categorie cat);
 
+    @Query("SELECT count (u) FROM entreprise u ")
+    public int countentreprise();
+
 
 }

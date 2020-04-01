@@ -29,6 +29,7 @@ public interface OffreRepositiory extends JpaRepository<offre, Long> {
 
     @Query("SELECT u FROM offre u where u.categorie = ?1")
     public List<offre> findoffresBycat(categorie cat);
-
+    @Query("SELECT COUNT (u) FROM offre u ")
+    public int countoffre();
 
 }

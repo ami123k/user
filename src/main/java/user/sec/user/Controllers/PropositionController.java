@@ -224,5 +224,16 @@ private UserController userController;
         return  propositionRepositiory.findpropouserbyoffre(user_id,offre_id);
 
     }
+    @GetMapping(value ="/countproposition"  )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public int countproposition(){
+        return  propositionRepositiory.countproposition();
 
+    }
+    @GetMapping(value ="/countpropositionvalide"  )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public int countpropositionvalide(){
+        return  propositionRepositiory.countpropositionvalide(false);
+
+    }
 }
