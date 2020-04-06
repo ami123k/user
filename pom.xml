@@ -108,6 +108,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>users_mysql</finalName>
+                </configuration>
+
             </plugin>
         </plugins>
     </build>
