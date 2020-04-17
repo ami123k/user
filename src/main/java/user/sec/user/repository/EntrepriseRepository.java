@@ -17,6 +17,8 @@ public interface EntrepriseRepository extends JpaRepository<entreprise, Long> {
 
     @Query("SELECT count (u) FROM entreprise u ")
     public int countentreprise();
+    @Query("SELECT u.entrepriseuser.name_entreprise FROM User u where u.id = ?1")
+    public String finentreprisebyuser(long id);
 
 
 }

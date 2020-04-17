@@ -50,9 +50,8 @@ public class offreController {
     public offre Updateoffre(@PathVariable(name = "id") Long id ,@RequestBody offre p) {
         System.out.println(offreRepositiory.findcategoriebyoffre(id));
         System.out.println(offreRepositiory.findcat(id));
-        p.setCategorie(offreRepositiory.findcat(id));
         p.setId_offre(id);
-        p.setCategorie(offreRepositiory.findcat(id));
+
 
         return offreRepositiory.save(p);
 

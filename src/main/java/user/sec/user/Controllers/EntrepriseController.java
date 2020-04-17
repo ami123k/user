@@ -4,10 +4,12 @@ import org.junit.experimental.categories.Categories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import user.sec.user.Service.EntrepriseService;
 import user.sec.user.repository.EntrepriseRepository;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +41,8 @@ public class EntrepriseController {
 
     @Autowired
     private EntrepriseRepository offreRepositiory ;
-
+    @Autowired
+    EntrepriseService entrepriseService;
 
     /* ////////////////////////////afficher////////////////////// */
     @GetMapping(value = "/getAll" )
@@ -61,7 +64,11 @@ public class EntrepriseController {
         return offreRepositiory.findById(id).get();
     }
 
-
+    @GetMapping(value = "/entreprisebyuser/{id}" )
+    public String entreprisebyuser
+            (@PathVariable(name = "id") Long id ) {
+        return offreRepositiory.finentreprisebyuser(id);
+    }
 
 
     /* ////////////////////////////update////////////////////// */
@@ -199,4 +206,15 @@ public class EntrepriseController {
         return  offreRepositiory.finentrepriseBycat(categorie);
 
     }
+    @RequestMapping(value = "/stat-entreprise", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseBody
+    public List<statistiqueEntreprise> stateentreprise(){
+        return entrepriseService.statequipesujet();
+    }
+    @RequestMapping(value = "/stat-offre", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseBody
+    public List<statistiqueOffre> stateoffre(){
+        return entrepriseService.stateoffre();
+    }
+
 }

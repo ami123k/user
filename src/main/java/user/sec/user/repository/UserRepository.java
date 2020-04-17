@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import user.sec.user.models.Role;
 import user.sec.user.models.User;
+import user.sec.user.models.categorie;
+import user.sec.user.models.entreprise;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,5 +24,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u where u.valider  = ?1 ")
     public List<User> findByRole( boolean valider);
 
+    @Query("SELECT u FROM User u where u.entrepriseuser  IS NOT NULL ")
+    public List<User> findByrolefournisseur( );
 
     }

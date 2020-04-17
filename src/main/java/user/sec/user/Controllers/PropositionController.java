@@ -1,6 +1,7 @@
 package user.sec.user.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 import org.springframework.integration.sftp.session.SftpSession;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,10 +25,7 @@ import user.sec.user.storage.StorageService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -40,6 +41,8 @@ private offreController offreController;
 private UserController userController;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
     @Autowired
     EntrepriseController entrepriseController;
     /* ////////////////////////////afficher////////////////////// */
@@ -102,6 +105,7 @@ private UserController userController;
             System.out.println(e.getUser().getUsername());
             message = "You successfully uploaded " + file.getOriginalFilename() + "!";
 
+
             return ResponseEntity.status(HttpStatus.OK).body(message);
         } catch (Exception e) {
             message = "FAIL to upload " + file.getOriginalFilename() + "!";
@@ -133,10 +137,18 @@ private UserController userController;
 
     @GetMapping(value = "/listentreprisebypropo/{id_proposition}" )
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public List<String> findusersfromproposition( @PathVariable(value = "id_proposition") Long id){
+    public List<entreprise> findusersfromproposition( @PathVariable(value = "id_proposition") Long id){
         return  propositionRepositiory.findusersfromproposition(id);
 
     }
+    @GetMapping(value = "/findpropositionByentreprise/{logo}" )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<proposition> findpropositionByentreprise( @PathVariable(value = "logo") String logo){
+        return  propositionRepositiory.findpropositionByentreprise(logo);
+
+    }
+
+
     @GetMapping(value = "/finduserfromproposition/{id_proposition}" )
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<proposition> finduserfromproposition( @PathVariable(value = "id_proposition") Long id){
@@ -208,10 +220,33 @@ private UserController userController;
         p.setUser(propo.getUser());
         p.setOffre(propo.getOffre());
         p.setValidation(false);
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(p.getUser().getEmail());
+
+        msg.setSubject("bonjour votre proposition de  "+p.getOffre().getName()+"est accepter veuillez contacter esprit finance");
+        msg.setText("votre proposition de  "+p.getOffre().getName()+"est accepter veuillez contacter esprit finance");
+
+        javaMailSender.send(msg);
         return propositionRepositiory.save(p);
 
     }
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
 
+        mailSender.setUsername("aminelimem147@gmail.com");
+        mailSender.setPassword("Bonjour.1234");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
     @GetMapping(value = "/listpropbyoffconfirm/{user_id}" )
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<proposition> findBypropoconfirm( @PathVariable(value = "user_id") Long user_id){
@@ -236,4 +271,6 @@ private UserController userController;
         return  propositionRepositiory.countpropositionvalide(false);
 
     }
+
+
 }

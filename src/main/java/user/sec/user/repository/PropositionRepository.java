@@ -16,8 +16,10 @@ import java.util.List;
 public interface PropositionRepository extends JpaRepository<proposition, Long> {
     @Query("SELECT u FROM proposition u where u.offre.id_offre = ?1")
     public List<proposition> findpropositionByoffre(Long cat);
-   @Query("SELECT u.user.entrepriseuser.name_entreprise FROM proposition u where u.offre.id_offre = ?1")
-    public List<String> findusersfromproposition(Long cat);
+   @Query("SELECT u.user.entrepriseuser FROM proposition u where u.offre.id_offre = ?1")
+    public List<entreprise> findusersfromproposition(Long cat);
+ @Query("SELECT u FROM proposition u where u.user.entrepriseuser.logo = ?1")
+ public List<proposition> findpropositionByentreprise(String logo);
 
     @Query("SELECT u FROM proposition u where u.id_proposition = ?1")
     public proposition findpropositionByid(Long cat);
