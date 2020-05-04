@@ -3,5 +3,7 @@ node {
 	url: 'https://github.com/ami123k/user'
    }
    stage('compile-package'){
-   sh 'mvn package'}
+   def mvnhome = tool name: '', type: 'maven'
+   "$mvnhome/bin/mvn package"
+  }
  
