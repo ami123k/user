@@ -1,9 +1,0 @@
-node {
-   stage('SCM Checkout'){ 
-	git 'https://github.com/ami123k/user'
-   }
-   stage('compile-package'){
-   def mvnhome = tool name: '', type: 'maven'
-   "$mvnhome/bin/mvn package"
-  }
- 
