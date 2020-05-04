@@ -2,19 +2,16 @@
  
 
 node {
-   def mvn = tool name: '', type: 'maven' + '/bin/mvn'
+   
    stage('SCM Checkout'){
-    // Clone repo
-	git branch: 'master', 
-	credentialsId: 'github', 
-	url: 'https://github.com/ami123k/user'
+	git 'https://github.com/ami123k/user'
    
    }
      
-stage('Mvn Package'){
-	   // Build using maven
+stage('compile-Package'){
+def mvnHome = tool name: '', type: 'maven'
 	   
-	   sh "${mvn} clean package deploy"
+	   sh "${mvnHome}/bin/mvn package"
    }
    
 }
