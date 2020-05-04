@@ -1,8 +1,17 @@
+
+ 
+
 node {
-   stage('SCM Checkout'){ 
-	git 'https://github.com/ami123k/user'
+   def mvn = tool (name: 'maven3', type: 'maven') + '/bin/mvn'
+   stage('SCM Checkout'){
+    // Clone repo
+	git branch: 'master', 
+	credentialsId: 'github', 
+	url: 'https://github.com/ami123k/user'
+   
    }
-   stage('compile-package'){
+     
+stage('compile-package'){
    def mvnhome = tool name: '', type: 'maven'
    sh "$mvnhome/bin/mvn package"
   }
