@@ -11,7 +11,9 @@ node {
    
    }
      
-stage('compile-package'){
-   def mvnhome = tool name: '', type: 'maven'
-   sh "$mvnhome/bin/mvn package"
-  }
+stage('Mvn Package'){
+	   // Build using maven
+	   
+	   sh "${mvn} clean package deploy"
+   }
+   
