@@ -1,6 +1,6 @@
 node {
    stage('SCM Checkout'){ 
-	url: 'https://github.com/ami123k/user'
+	git 'https://github.com/ami123k/user'
    }
    stage('compile-package'){
    def mvnhome = tool name: '', type: 'maven'
