@@ -1,17 +1,18 @@
-
- 
-
-node {
-   
-   stage('SCM Checkout'){
-	git 'https://github.com/ami123k/user'
-   
-   }
-     
-stage('compile-Package'){
-def mvnHome = tool name: '', type: 'maven'
-	   
-	   sh "${mvnHome}/bin/mvn package"
-   }
-   
+pipeline{
+	agent any
+	tools {
+		maven 'Maven 3.6.2'
+	}
+	stages{
+	        stage ('Clean') {
+			steps {
+				sh 'mvn clean'
+	        	}
+		}
+	        stage ('Package') {
+			steps {
+	            		sh 'mvn package'
+	        	}	
+		}
+	}
 }
