@@ -8,10 +8,8 @@ import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Data
@@ -24,10 +22,20 @@ public class offre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_offre;
     private String name  ;
+    private LocalDate date;
     private int quantite ;
     private  String description ;
-    @JsonIgnore
 
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    @JsonIgnore
     @OneToMany(mappedBy="offre",cascade={CascadeType.REMOVE},fetch = FetchType.EAGER)
     private List<proposition> listepropo=new ArrayList<>() ;
 
@@ -112,5 +120,13 @@ public class offre {
     }
 
     public offre() {
+    }
+
+    public offre(String name, LocalDate date, int quantite, String description, user.sec.user.models.categorie categorie) {
+        this.name = name;
+        this.date = date;
+        this.quantite = quantite;
+        this.description = description;
+        this.categorie = categorie;
     }
 }

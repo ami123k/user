@@ -1,6 +1,8 @@
 package user.sec.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -14,10 +16,12 @@ public class proposition {
     private boolean validation;
     @JsonIgnore
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name ="User_id")
     private  User user ;
     @JsonIgnore
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name ="offre_ID")
     private offre offre ;
     private String Description;
@@ -135,4 +139,5 @@ public class proposition {
         this.type = type;
         this.name = name;
     }
+
 }

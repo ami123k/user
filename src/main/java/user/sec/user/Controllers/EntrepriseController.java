@@ -33,17 +33,23 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import user.sec.user.models.*;
+import user.sec.user.repository.RoleRepository;
+import user.sec.user.repository.UserRepository;
 import user.sec.user.storage.StorageService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class EntrepriseController {
-
+    @Autowired
+    private EntrepriseRepository entrepriseRepository ;
     @Autowired
     private EntrepriseRepository offreRepositiory ;
     @Autowired
     EntrepriseService entrepriseService;
-
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    UserRepository userRepository;
     /* ////////////////////////////afficher////////////////////// */
     @GetMapping(value = "/getAll" )
     public List<entreprise> entrepriseList(){
@@ -65,11 +71,15 @@ public class EntrepriseController {
     }
 
     @GetMapping(value = "/entreprisebyuser/{id}" )
-    public String entreprisebyuser
+    public String nameentreprisebyuser
             (@PathVariable(name = "id") Long id ) {
-        return offreRepositiory.finentreprisebyuser(id);
+        return offreRepositiory.findnameentreprisebyuser(id);
     }
 
+    @GetMapping(value = "/entreprisebyuser2/{id}" )
+    public entreprise entreprisebyuser(@PathVariable(name = "id") Long id ) {
+        return offreRepositiory.finentreprisebyuser(id);
+    }
 
     /* ////////////////////////////update////////////////////// */
     @RequestMapping(value = "/Updateentreprise/{id}", method = RequestMethod.PUT)
@@ -82,6 +92,28 @@ public class EntrepriseController {
         return offreRepositiory.save(p);
 
     }
+    Set<Role> roles = new HashSet<>();
+    /* ////////////////////////////update////////////////////// */
+    @RequestMapping(value = "/Updateroleuser/{type}", method = RequestMethod.PUT)
+    public void  Updateusertoroleuser(@PathVariable(name = "type") String id_entreprise) {
+
+        List<User>a = entrepriseRepository.finduserbyentreprise(id_entreprise);
+        for(User b : a) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+            b.setId(b.getId());
+
+            b.setEmail(b.getEmail());
+            b.setPassword(b.getPassword());
+            b.setUsername(b.getUsername());
+            b.setValider(true);
+            b.setRoles(roles);
+            b.setEntrepriseuser(null);
+            userRepository.save(b);
+        }
+
+    }
 /*
     @RequestMapping(value = "/ajoutentreprise", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
@@ -91,9 +123,9 @@ public class EntrepriseController {
         return equipe;
     }
 */
-    @DeleteMapping(value = "/deleteentreprise/{id}" )
-    public void Delete(@PathVariable(name = "id") Long id ) {
-        offreRepositiory.deleteById(id);
+    @DeleteMapping(value = "/deleteentreprise/{type}" )
+    public void Delete(@PathVariable(name = "type") String id ) {
+        offreRepositiory.deletebytype(id);
 
     }
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +190,8 @@ public class EntrepriseController {
     List<String> files = new ArrayList<String>();
 
     @PostMapping("/post")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file ,@RequestParam("logo") MultipartFile logo , String name_entreprise ,String descprition, categorie categorie ) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file ,@RequestParam("logo") MultipartFile logo , String name_entreprise ,String descprition, categorie categorie )
+    {
         String message = "";
         try {
 
@@ -216,5 +249,7 @@ public class EntrepriseController {
     public List<statistiqueOffre> stateoffre(){
         return entrepriseService.stateoffre();
     }
+
+
 
 }

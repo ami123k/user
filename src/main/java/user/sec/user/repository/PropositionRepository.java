@@ -43,6 +43,8 @@ public interface PropositionRepository extends JpaRepository<proposition, Long> 
     @Query("SELECT u.user.entrepriseuser.name_entreprise FROM proposition u where u.id_proposition = ?1")
     public List<String> nameentreprisebypropo(Long cat);
 
+    @Query("SELECT u FROM proposition u where u.user.id = ?1")
+    public List<proposition> userproposition(Long cat);
 
 
  @Query("SELECT e from proposition e where e.user.id =:id AND e.validation =:validation")
@@ -56,4 +58,5 @@ public interface PropositionRepository extends JpaRepository<proposition, Long> 
  public int countproposition();
  @Query("SELECT COUNT (u) FROM proposition u where u.validation = ?1")
  public int countpropositionvalide(boolean valid);
+
 }

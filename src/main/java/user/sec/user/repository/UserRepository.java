@@ -27,4 +27,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u where u.entrepriseuser  IS NOT NULL ")
     public List<User> findByrolefournisseur( );
 
+
     }

@@ -21,7 +21,9 @@ import user.sec.user.models.*;
 import user.sec.user.repository.*;
 import user.sec.user.sftp.UpAndDownload;
 import user.sec.user.storage.StorageService;
+import user.sec.user.Service.*;
 
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -45,6 +47,8 @@ private UserController userController;
     private JavaMailSender javaMailSender;
     @Autowired
     EntrepriseController entrepriseController;
+    @Autowired
+    propositionService propositionService ;
     /* ////////////////////////////afficher////////////////////// */
     @Autowired
     private EntrepriseRepository entrepriseRepository ;
@@ -176,7 +180,7 @@ private UserController userController;
 
     }
     Set<Role> roles = new HashSet<>();
-    /* ////////////////////////////update////////////////////// */
+    /* ////////////////////////////updateRoletoFournisseur////////////////////// */
     @RequestMapping(value = "/Updateuser/{id}", method = RequestMethod.PUT)
     public User Updateuser(@PathVariable(name = "id") Long id , @RequestBody User p) {
         Role userRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
@@ -193,6 +197,9 @@ private UserController userController;
         return userRepository.save(p);
 
     }
+
+
+
     @RequestMapping(value = "/Updateadmin/{id}", method = RequestMethod.PUT)
     public User valider(@PathVariable(name = "id") Long id , @RequestBody User p) {
         Role userRole = roleRepository.findByName(ERole.ROLE_ADMIN)
@@ -272,5 +279,16 @@ private UserController userController;
 
     }
 
+    @RequestMapping(value = "/propositionentreprise/{offre_id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseBody
+    public List<propositionentreprise> propositionentreprises(@PathVariable(value = "offre_id") long u){
+        return propositionService.propositionentreprises(u);
+    }
+    @GetMapping(value ="/userproposition/{id}"  )
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<proposition> userproposition(@PathVariable(value = "id") long id){
+        return  propositionRepositiory.userproposition(id);
+
+    }
 
 }
